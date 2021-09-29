@@ -6,13 +6,21 @@ Description: A command lines sokoban game created with Python where
 """
 
 
-from cgi import test
-
-
 class Sokoban:
     def __init__(self, board):
         self.__original_board = board
         self.__board = board
+        self.__board_width = len(board[0])
+        self.__board_height = len(board)
+        self.__num_of_holes = self.find_number_of_holes()
+
+    def find_number_of_holes(self):
+        number_of_holes = 0
+        for row in range(len(self.__board)):
+            for col in range(len(self.__board[0])):
+                if self.__board[row][col] == "o":
+                    number_of_holes += 1
+        return number_of_holes
 
     def find_player(self):
         for row in range(len(self.__board)):
@@ -30,13 +38,19 @@ class Sokoban:
         self.__board = self.__original_board
 
     def move(self, direction):
+        player_row, player_col = self.find_player()
+
+    def check_move(self, player_row, player_col, direction):
         pass
 
     def __str__(self):
+        # TODO Check if str output is correct
         output = ""
         for row in self.__board:
             output += " ".join(row) + "\n"
+        # return the output with the last "\n" character
         return output[:-1]
+
 
 '''
 def main(board):
@@ -89,4 +103,4 @@ test_board = [
     ['*', '*', '*', '*', '*', '*', '*', '*']
 ]
 a = Sokoban(test_board)
-print(a)
+
