@@ -10,8 +10,8 @@ class Sokoban:
     def __init__(self, board):
         self.__original_board = board
         self.__board = board
-        self.__board_width = len(board[0])
-        self.__board_height = len(board)
+        self.__width = len(board[0])
+        self.__height = len(board)
         self.__num_of_holes = self.find_number_of_holes()
         self.__num_of_moves = 0
 
@@ -43,7 +43,14 @@ class Sokoban:
         pass
 
     def move(self, direction):
-        player_row, player_col = self.find_player()
+        p_row, p_col = self.find_player()
+        if direction == "w":
+            desired_location = self.__board[(p_row - 1) % self.__height][p_col]
+            if desired_location == " ":
+                desired_location = "P"
+                self.__board[p_row][p_col] = " "
+                self.__num_of_moves += 1
+            # TODO Moving crates
 
     def __str__(self):
         # TODO Check if str output is correct
@@ -105,3 +112,4 @@ test_board = [
     ['*', '*', '*', '*', '*', '*', '*', '*']
 ]
 a = Sokoban(test_board)
+
