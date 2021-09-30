@@ -8,12 +8,12 @@ Description: A command lines sokoban game created with Python where
 
 class Sokoban:
     def __init__(self, board):
-        self.__original_board = board
+        self.__original_board = list(board)
         self.__board = board
         self.__width = len(board[0])
         self.__height = len(board)
         self.__num_of_holes = self.find_number_of_holes()
-        self.__num_of_moves = 0
+        self.__move_history = []
 
     def find_number_of_holes(self):
         number_of_holes = 0
@@ -33,37 +33,44 @@ class Sokoban:
         return self.__num_of_holes == 0
 
     def get_steps(self):
-        return self.__num_of_moves
+        return len(self.__move_history) - 1
 
     def restart(self):
         # TODO Check that this works and the original board is not changed
         self.__board = self.__original_board
 
     def undo(self):
-        pass
+        if len(self.__move_history) != 0:
+            swapped_square1, swapped_square2 = self.__move_history.pop()
+            swap_row1, swap_col1 = swapped_square1
+            swap_row2, swap_col2 = swapped_square2
+            self.swap_squares(swap_row1, swap_col1, swap_row2, swap_col2)
 
     def move(self, direction):
-        intended_row, intended_col = self.get_intended_square(direction)
-        if self.__board[intended_row][intended_row] not in (" ", "#"):
-            return
-        pass
-
-    def get_intended_square(self, direction):
         p_row, p_col = self.find_player()
-        if direction == "w":
-            return (p_row - 1) % self.__height, p_col
-        elif direction == "a":
-            return p_row, (p_col - 1) % self.__width
-        elif direction == "s":
-            return (p_row + 1) % self.__height, p_col
+        move_row, move_col = self.get_intended_square(direction, p_row, p_col)
+        if self.__board[move_row][move_col] not in (" ", "#"):
+            return
+        elif self.__board[move_row][move_col] == " ":
+            self.swap_squares(p_row, p_col, move_row, move_col)
+            self.__move_history.append(((p_row, p_col), (move_row, move_col)))
         else:
-            return p_row, (p_col + 1) % self.__width
+            pass
 
-    def validate_move(self, player_row, player_col, direction):
-        pass
+    def get_intended_square(self, direction, player_row, player_col):
+        if direction == "w":
+            return (player_row - 1) % self.__height, player_col
+        elif direction == "a":
+            return player_row, (player_col - 1) % self.__width
+        elif direction == "s":
+            return (player_row + 1) % self.__height, player_col
+        else:
+            return player_row, (player_col + 1) % self.__width
 
-    def change_squares(self, row, col, character):
-        self.__board[row][col] = character
+    def swap_squares(self, row1, col1, row2, col2):
+        temp = self.__board[row1][col1]
+        self.__board[row1][col1] = self.__board[row2][col2]
+        self.__board[row2][col2] = temp
 
     def __str__(self):
         # TODO Check if str output is correct
