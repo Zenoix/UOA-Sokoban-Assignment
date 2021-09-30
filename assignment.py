@@ -13,6 +13,7 @@ class Sokoban:
         self.__board_width = len(board[0])
         self.__board_height = len(board)
         self.__num_of_holes = self.find_number_of_holes()
+        self.__num_of_moves = 0
 
     def find_number_of_holes(self):
         number_of_holes = 0
@@ -32,19 +33,17 @@ class Sokoban:
         return self.__num_of_holes == 0
 
     def get_steps(self):
-        pass
+        return self.__num_of_moves
 
     def restart(self):
+        # TODO Check that this works and the original board is not changed
         self.__board = self.__original_board
-    
+
     def undo(self):
         pass
 
     def move(self, direction):
         player_row, player_col = self.find_player()
-
-    def check_move(self, player_row, player_col, direction):
-        pass
 
     def __str__(self):
         # TODO Check if str output is correct
@@ -106,4 +105,3 @@ test_board = [
     ['*', '*', '*', '*', '*', '*', '*', '*']
 ]
 a = Sokoban(test_board)
-
