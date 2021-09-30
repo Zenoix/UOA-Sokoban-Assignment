@@ -29,13 +29,16 @@ class Sokoban:
                     return row, col
 
     def complete(self):
-        pass
+        return self.__num_of_holes == 0
 
     def get_steps(self):
         pass
 
     def restart(self):
         self.__board = self.__original_board
+    
+    def undo(self):
+        pass
 
     def move(self, direction):
         player_row, player_col = self.find_player()
