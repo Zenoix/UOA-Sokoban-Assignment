@@ -43,14 +43,27 @@ class Sokoban:
         pass
 
     def move(self, direction):
+        intended_row, intended_col = self.get_intended_square(direction)
+        if self.__board[intended_row][intended_row] not in (" ", "#"):
+            return
+        pass
+
+    def get_intended_square(self, direction):
         p_row, p_col = self.find_player()
         if direction == "w":
-            desired_location = self.__board[(p_row - 1) % self.__height][p_col]
-            if desired_location == " ":
-                desired_location = "P"
-                self.__board[p_row][p_col] = " "
-                self.__num_of_moves += 1
-            # TODO Moving crates
+            return (p_row - 1) % self.__height, p_col
+        elif direction == "a":
+            return p_row, (p_col - 1) % self.__width
+        elif direction == "s":
+            return (p_row + 1) % self.__height, p_col
+        else:
+            return p_row, (p_col + 1) % self.__width
+
+    def validate_move(self, player_row, player_col, direction):
+        pass
+
+    def change_squares(self, row, col, character):
+        self.__board[row][col] = character
 
     def __str__(self):
         # TODO Check if str output is correct
@@ -61,7 +74,6 @@ class Sokoban:
         return output[:-1]
 
 
-'''
 def main(board):
     game = Sokoban(board)
     message = 'Press w/a/s/d to move, r to restart, or u to undo'
@@ -112,4 +124,4 @@ test_board = [
     ['*', '*', '*', '*', '*', '*', '*', '*']
 ]
 a = Sokoban(test_board)
-
+'''
