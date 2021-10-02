@@ -58,17 +58,6 @@ class Sokoban:
                     self.__num_of_holes += 1
                     self.__game_history.pop()
 
-    def move(self, direction):
-        player_coords = self.find_player()
-        player_move_pos = self.get_move_location(
-            direction, player_coords)
-
-        if self.__board[player_move_pos[0]][player_move_pos[1]] == " ":
-            self.move_player(player_coords, player_move_pos)
-
-        elif self.__board[player_move_pos[0]][player_move_pos[1]] == "#":
-            self.move_crate(direction, player_coords, player_move_pos)
-
     def get_move_location(self, direction, initial_coords):
         initial_row, initial_col = initial_coords
         # modulus allows player and crate to appear on other side of board
@@ -80,6 +69,17 @@ class Sokoban:
             return (initial_row + 1) % self.__height, initial_col
         else:
             return initial_row, (initial_col + 1) % self.__width
+
+    def move(self, direction):
+        player_coords = self.find_player()
+        player_move_pos = self.get_move_location(
+            direction, player_coords)
+
+        if self.__board[player_move_pos[0]][player_move_pos[1]] == " ":
+            self.move_player(player_coords, player_move_pos)
+
+        elif self.__board[player_move_pos[0]][player_move_pos[1]] == "#":
+            self.move_crate(direction, player_coords, player_move_pos)
 
     def move_player(self, player_coords, floor_coords):
         self.swap_squares(player_coords, floor_coords)
@@ -114,7 +114,6 @@ class Sokoban:
         self.__board[row2][col2] = temp
 
     def __str__(self):
-        # TODO Check if str output is correct
         output = ""
         for row in self.__board:
             output += " ".join(row) + "\n"
