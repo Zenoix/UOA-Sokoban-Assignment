@@ -37,10 +37,6 @@ class Sokoban:
         # the player always moves whenever the user has a valid input
         return len(self.__player_moves)
 
-    def restart(self):
-        while self.__game_log:
-            self.undo()
-
     def undo(self):
         # TODO fix undo method
         if self.__game_log:
@@ -54,6 +50,14 @@ class Sokoban:
         # TODO implement
         pass
 
+    def restart(self):
+        # TODO Change this after doing the undo method
+        while self.__game_log:
+            self.undo()
+
+    def log_game_actions(self):
+        pass
+
     def get_move_location(self, direction, initial_coords):
         initial_row, initial_col = initial_coords
         # modulus allows player and crate to appear on other side of board
@@ -65,6 +69,13 @@ class Sokoban:
             return (initial_row + 1) % self.__height, initial_col
         else:
             return initial_row, (initial_col + 1) % self.__width
+
+    def swap_squares(self, coord1, coord2):
+        row1, col1 = coord1
+        row2, col2 = coord2
+        temp = self.__board[row1][col1]
+        self.__board[row1][col1] = self.__board[row2][col2]
+        self.__board[row2][col2] = temp
 
     def move(self, direction):
         player_coords = self.find_player()
@@ -93,19 +104,12 @@ class Sokoban:
             crate_hole_tuple = (crate_coords, crate_move_coords)
             self.__crate_moves.append(crate_hole_tuple)
         # move player after crate
-        self.swap_squares(player_coords, crate_coords) 
+        self.swap_squares(player_coords, crate_coords)
 
     def crate_in_hole(self, crate_coords, hole_coords):
         self.__board[hole_coords[0]][hole_coords[1]] = " "
         self.__board[crate_coords[0]][crate_coords[1]] = " "
         self.__num_of_holes -= 1
-
-    def swap_squares(self, coord1, coord2):
-        row1, col1 = coord1
-        row2, col2 = coord2
-        temp = self.__board[row1][col1]
-        self.__board[row1][col1] = self.__board[row2][col2]
-        self.__board[row2][col2] = temp
 
     def __str__(self):
         output = ""
@@ -133,24 +137,3 @@ def main(board):
             game.move(move)
     print(game)
     print(f'Game won in {game.get_steps()} steps!')
-
-
-# This is here for you to test your code. You will need to test your code
-# yourself for this assignment. Remove any testing code (including the code
-# provided below) when you submit this file.
-#
-# The only code in your submission should be:
-#   - the Sokoban class
-#   - the main function
-#
-# There should be no other code included in your submission.
-test_board = [
-    ['*', '*', '*', '*', '*', '*', ' ', '*'],
-    ['*', ' ', ' ', ' ', ' ', ' ', ' ', '*'],
-    [' ', 'P', ' ', '#', ' ', ' ', ' ', ' '],
-    ['*', '*', '*', '*', '*', ' ', '#', '*'],
-    ['*', 'o', ' ', ' ', ' ', ' ', ' ', '*'],
-    ['*', ' ', ' ', ' ', ' ', ' ', 'o', '*'],
-    ['*', '*', '*', '*', '*', '*', ' ', '*']
-]
-main(test_board)
