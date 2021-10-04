@@ -34,11 +34,9 @@ class Sokoban:
         return self.__num_of_holes == 0
 
     def get_steps(self):
-        # the player always moves whenever the user has a valid input
-        return len(self.__player_moves)
+        return len(self.__game_log)
 
     def undo(self):
-        # TODO finish undo method
         if self.__game_log:
             last_action = self.__game_log.pop()
             if last_action == "player_move":
@@ -64,14 +62,13 @@ class Sokoban:
         # move the player back to the previous square
         self.undo_player_move()
 
-        # replace the crate and hole back
+        # replace the crate and hole with their symbols
         crate_coords, hole_coords = self.__crate_moves.pop()
         self.__board[hole_coords[0]][hole_coords[1]] = "o"
         self.__board[crate_coords[0]][crate_coords[1]] = "#"
         self.__num_of_holes += 1
 
     def restart(self):
-        # TODO Change this after doing the undo method
         while self.__game_log:
             self.undo()
 
@@ -85,6 +82,13 @@ class Sokoban:
         else:  # if action is None, the action is player taking a crate's spot
             self.__player_moves.append(coords_tuple)  # empty move's coords
 
+    def swap_squares(self, coord1, coord2):
+        row1, col1 = coord1
+        row2, col2 = coord2
+        temp = self.__board[row1][col1]
+        self.__board[row1][col1] = self.__board[row2][col2]
+        self.__board[row2][col2] = temp
+
     def get_move_location(self, direction, initial_coords):
         initial_row, initial_col = initial_coords
         # modulus allows player and crate to appear on other side of board
@@ -96,13 +100,6 @@ class Sokoban:
             return (initial_row + 1) % self.__height, initial_col
         else:
             return initial_row, (initial_col + 1) % self.__width
-
-    def swap_squares(self, coord1, coord2):
-        row1, col1 = coord1
-        row2, col2 = coord2
-        temp = self.__board[row1][col1]
-        self.__board[row1][col1] = self.__board[row2][col2]
-        self.__board[row2][col2] = temp
 
     def move(self, direction):
         player_coords = self.find_player()
@@ -124,13 +121,13 @@ class Sokoban:
             swap_tuple = (crate_coords, crate_move_coords)
             self.log_game_actions("crate_move", swap_tuple)
         else:
-            self.crate_in_hole(crate_coords, crate_move_coords)
+            self.move_crate_in_hole(crate_coords, crate_move_coords)
         # move player to the space left by crate
         self.swap_squares(player_coords, crate_coords)
         # log the empty move's coordinates
         self.log_game_actions(None, (player_coords, crate_coords))
 
-    def crate_in_hole(self, crate_coords, hole_coords):
+    def move_crate_in_hole(self, crate_coords, hole_coords):
         self.__board[hole_coords[0]][hole_coords[1]] = " "
         self.__board[crate_coords[0]][crate_coords[1]] = " "
         self.__num_of_holes -= 1
