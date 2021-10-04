@@ -8,7 +8,6 @@
 #
 # There should be no other code included in your submission.
 
-from assignment import Sokoban
 from assignment import main
 
 test_board = [
