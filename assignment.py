@@ -42,20 +42,33 @@ class Sokoban:
         if self.__game_log:
             last_action = self.__game_log.pop()
             if last_action == "player_move":
-                coord1, coord2 = self.__player_moves.pop()
-                self.swap_squares(coord1, coord2)
+                self.undo_player_move()
             elif last_action == "crate_move":
                 self.undo_crate_move()
             else:
                 self.undo_crate_in_hole()
 
+    def undo_player_move(self):
+        player_coords, floor_coords = self.__player_moves.pop()
+        self.swap_squares(player_coords, floor_coords)
+
     def undo_crate_move(self):
-        # TODO implement
-        pass
+        # move the player back to the previous square
+        self.undo_player_move()
+
+        # move the crate back
+        crate_coords, floor_coords = self.__crate_moves.pop()
+        self.swap_squares(crate_coords, floor_coords)
 
     def undo_crate_in_hole(self):
-        # TODO implement
-        pass
+        # move the player back to the previous square
+        self.undo_player_move()
+
+        # replace the crate and hole back
+        crate_coords, hole_coords = self.__crate_moves.pop()
+        self.__board[hole_coords[0]][hole_coords[1]] = "o"
+        self.__board[crate_coords[0]][crate_coords[1]] = "#"
+        self.__num_of_holes += 1
 
     def restart(self):
         # TODO Change this after doing the undo method
@@ -70,7 +83,7 @@ class Sokoban:
             self.__crate_moves.append(coords_tuple)
             self.__game_log.append(action)
         else:  # if action is None, the action is player taking a crate's spot
-            self.__player_moves.append(coords_tuple)  # logs empty moves
+            self.__player_moves.append(coords_tuple)  # empty move's coords
 
     def get_move_location(self, direction, initial_coords):
         initial_row, initial_col = initial_coords
