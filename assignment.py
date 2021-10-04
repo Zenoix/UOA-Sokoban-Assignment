@@ -1,8 +1,8 @@
 """
 Name: Jeff Wang
 UPI: jwan557
-Description: A command lines sokoban game created with Python where
-             a player must use wasd to push crates into holes.
+Description: A command line sokoban game created with Python where
+             a player must use wasd to push crates (#) into holes (o).
 """
 
 
@@ -14,7 +14,7 @@ class Sokoban:
         self.__num_of_holes = self.find_number_of_holes()
         self.__game_log = []  # log containing all actions made in the game
         self.__player_moves = []  # coords for swaps when player moves
-        self.__crate_moves = []  # coords for crate moves or crate in hole
+        self.__crate_moves = []  # coords for crate moves or crates in holes
 
     def find_number_of_holes(self):
         number_of_holes = 0
